@@ -1,0 +1,58 @@
+<div class="container">
+  <form [formGroup]="frmConcepto">
+    <h2 class="title">
+      REGISTRO
+      <small class="text-muted subtitle">
+        CONCEPTOS
+      </small>
+      <button *ngIf="actualizando" class="float-right btn btn-small btn-primary" (click)="limpiar()">LIMPIAR</button>
+    </h2>
+    <fieldset class="fieldset">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="codigo">Códgio:</label>
+            <input type="text" class="form-control" id="codigo" formControlName="codigo"
+              [(ngModel)]="concepto.codigo">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="descripcion">Descripción:</label>
+            <input type="text" class="form-control" id="descripcion" formControlName="descripcion"
+              [(ngModel)]="concepto.descripcion">
+          </div>
+        </div>
+        <div class="col">
+          <button class="btn btn-success btn-block marginbutton" (click)="guardarConcepto()">{{actualizando ? 'Actualizar': 'Guardar'}}</button>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <h2 *ngIf="listaDeConceptos?.length" class="title">REGISTROS <small class="text-muted subtitle">CONCEPTOS</small></h2>
+  <fieldset class="fieldset" *ngIf="listaDeConceptos?.length">
+    <table class="table table-striped table-bordered">
+      <caption>Lista de conceptos</caption>
+      <thead class="table-dark">
+        <tr>
+          <th>Código</th>
+          <th>Descripción</th>
+          <th colspan="2">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let con of listaDeConceptos">
+          <th>{{con.codigo}}</th>
+          <td>{{con.descripcion}}</td>
+          <td>
+              <button class="btn btn-warning btn-block" (click)="cargarConcepto(con)">Ver</button>
+            </td>
+            <td>
+                <button class="btn btn-danger btn-block" (click)="eliminarConcepto(con.codigo)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </fieldset>
+</div>

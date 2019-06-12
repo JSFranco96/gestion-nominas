@@ -1,0 +1,205 @@
+<div class="container">
+  <form [formGroup]="frmEmpleado">
+    <h2 class="title">
+       REGISTRO
+      <small class="text-muted subtitle"> 
+        DATOS PERSONALES
+      </small>
+      <button *ngIf="actualizando" class="btn btn-small btn-primary float-right" (click)="limpiar()">LIMPIAR</button>
+    </h2>
+    <fieldset class="fieldset">
+      <div class="row">
+        <div class="col col-lg-2 col-md-2 col-sm-4 col-xs-12">
+            <div class="form-group">
+              <label for="codigo">Códgio:</label>
+              <input type="text" 
+              class="form-control" 
+              id="codigo" 
+              formControlName="codigo"
+              [(ngModel)] = "empleado.codigo">
+            </div>
+        </div>
+        <div class="col col-lg-3 col-md-3 col-sm-4 col-xs-12">
+            <div class="form-group">
+              <label for="nif">NIF:</label>
+              <input type="text" 
+              class="form-control" 
+              id="nif" 
+              formControlName="nif"
+              [(ngModel)] = "empleado.nif">
+            </div>      
+        </div>
+        <div class="col col-lg-3 col-md-3 col-sm-4 col-xs-12">
+              <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <input type="text" 
+                class="form-control" 
+                id="nombre" 
+                formControlName="nombre"
+                [(ngModel)] = "empleado.nombre">
+              </div>        
+          </div>
+          <div class="col col-lg-2 col-md-2 col-sm-4 col-xs-12">
+          <div class="form-group">
+            <label for="numerohijos">Número de hijos:</label>
+            <input type="text" 
+            class="form-control" 
+            id="numerohijos" 
+            formControlName="numerohijos"
+            [(ngModel)] = "empleado.numerohijos">
+          </div>
+        </div>
+        <div class="col col-lg-2 col-md-2 col-sm-4 col-xs-12">
+          <div class="form-group">
+            <label for="retencion">% retención:</label>
+            <input type="text" 
+            class="form-control"
+            id="retencion" 
+            formControlName="retencion"
+            [(ngModel)] = "empleado.retencion">
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+  <form [formGroup] = "frmCuenta">
+    <h2><small class="text-muted subtitle">DATOS DE LA CUENTA</small></h2>
+    <fieldset class="fieldset">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="codigobanco">Códgio banco:</label>
+            <input type="text" 
+            class="form-control" 
+            id="codigobanco" 
+            formControlName="codigobanco"
+            [(ngModel)] = "cuenta.codigobanco">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="codigosucursal">Códgio de la sucursal:</label>
+            <input type="text" 
+            class="form-control" 
+            id="codigosucursal" 
+            formControlName="codigosucursal"
+            [(ngModel)] = "cuenta.codigosucursal">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="numerocuenta">Número de cuenta:</label>
+            <input type="text" 
+            class="form-control" 
+            id="numerocuenta" 
+            formControlName="numerocuenta"
+            [(ngModel)] = "cuenta.numcuenta">
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+  <form [formGroup] = "frmDepartamento">
+    <h2>
+      <small class="text-muted subtitle">
+        DATOS DEL DEPARTAMENTO
+      </small>
+    </h2>
+    <fieldset class="fieldset">
+      <div class="row">
+          <div class="col col-lg-5 col-md-5 col-sm-5 col-xs-12">
+          <div class="form-group">
+            <label for="codigoDepartamento">Departamento</label>
+            <select 
+            formControlName="codigoDepartamento" 
+            id="codigoDepartamento" 
+            class="form-control"
+            #codigoDepto
+            [(ngModel)] = "departamento.codigoDepto"
+            (change)="onChangeDepto(codigoDepto.value)">
+              <option value="0" disabled>Elija un departamento</option>
+              <option *ngFor="let dep of listaDeDepartamentos" [ngValue]="dep.codigo">
+                {{dep.nombre}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col col-lg-5 col-md-5 col-sm-5 col-xs-12">
+          <div class="form-group">
+            <label for="funcion">Función:</label>
+            <input 
+            formControlName="funcion"
+            class="form-control" 
+            id="funcion" 
+            [(ngModel)]="departamento.funcion">
+          </div>
+        </div>
+        <div class="col col-lg-2 col-md-2 col-sm-2 col-xs-12">
+            <button class="float-right btn btn-block btn-primary marginbutton" (click)="agregarDepto()">AGREGAR</button>
+        </div>
+      </div>
+      <div class="row" *ngIf="listaDeDepartamentosAux?.length">
+        <div class="col">
+          <table class="table table-bordered table-striped">
+            <thead class="table dark">
+              <tr>
+                <th>Departamento</th>
+                <th>Función</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let depAux of listaDeDepartamentosAux">
+                <td>{{depAux.nomdepto}}</td>
+                <td>{{depAux.funcion}}</td>
+                <td>
+                  <button class="btn btn-danger btn-block" (click)="removerDepartamento(depAux.codigoDepto)">Eliminar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+  
+  <fieldset class="fieldset">
+    <div class="row">
+      <div class="col-md-3 offset-md-9 col-lg-3 offset-lg-9 col-sm-6 offset-sm-6 col-xs-12">
+        <button class="btn btn-success btn-block" (click)="guardarEmpleado()">{{actualizando ? 'Actualizar' : 'Guardar'}}</button>
+      </div>
+    </div>
+  </fieldset>
+
+  <h2 *ngIf="listaDeEmpleados?.length" class="title">REGISTROS <small class="text-muted subtitle">EMPLEADOS</small></h2>
+  <fieldset class="fieldset" *ngIf="listaDeEmpleados?.length">
+    <table class="table table-striped table-bordered">
+      <caption>Lista de empleados</caption>
+      <thead class="table-dark">
+        <tr>
+          <th>Código</th>
+          <th>NIF</th>
+          <th>Nombre</th>
+          <th># Hijos</th>
+          <th>% Retención</th>
+          <th colspan="2">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let emp of listaDeEmpleados">
+          <th>{{emp.codigo}}</th>
+          <td>{{emp.nif}}</td>
+          <td>{{emp.nombre}}</td>
+          <td>{{emp.numerohijos}}</td>
+          <td>{{emp.retencion}}</td>
+          <td>
+            <button class="btn btn-warning btn-block" (click)="cargarEmpleado(emp)">Ver</button>
+          </td>
+          <td>
+              <button class="btn btn-danger btn-block" (click)="eliminarEmpleado(emp)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </fieldset>
+</div>

@@ -1,1 +1,30 @@
 /* You can add global styles to this file, and also import other style files */
+@import "~bootstrap/dist/css/bootstrap.css";
+
+.fieldset{
+    border-top: 1px dotted gray;
+    padding: 10px;
+    margin-top:20px;
+}
+
+.title{
+    margin-top:20px;
+}
+
+.subtitle{
+    font-variant-caps: all-petite-caps;
+}
+
+.marginbutton{
+    margin-top: 32px;
+}
+
+.marginbutton2{
+    margin-top: 8px;
+}
+
+.sub-div{
+    max-height: 400px !important;
+    overflow-x: hidden !important;
+    overflow-y: auto;
+}

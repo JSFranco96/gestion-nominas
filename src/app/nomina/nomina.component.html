@@ -1,0 +1,235 @@
+<div class="container">
+  <form [formGroup]="frmNomina">
+    <h2 class="title">
+      REGISTRO
+      <small class="text-muted subtitle">
+        NÓMINA
+      </small>
+      <button *ngIf="actualizando" class="float-right btn btn-small btn-primary" (click)="limpiar()">LIMPIAR</button>
+    </h2>
+    <fieldset class="fieldset">
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="empleados">Empleados</label>
+            <select formControlName="empleados" id="empleados" class="form-control" #codigoEmpleado
+              [(ngModel)]="empleadoSeleccionado" (change)="onChangeEmpleado(codigoEmpleado.value)">
+              <option value="0" disabled>Elija un empleado</option>
+              <option *ngFor="let emp of listaDeEmpleados" [ngValue]="emp.codigo">
+                {{emp.nombre}}
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="cuenta">Cuenta:</label>
+            <input type="text" class="form-control" id="cuenta" formControlName="cuenta" [(ngModel)]="cuenta.numcuenta"
+              disabled>
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="retencion">% Retención:</label>
+            <input type="text" class="form-control" id="retencion" formControlName="retencion"
+              [(ngModel)]="empleado.retencion" disabled>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          <div class="form-group">
+            <label for="ejercicio">Ejercicio fiscal:</label>
+            <input type="text" class="form-control" id="ejercicio" formControlName="ejercicio"
+              [(ngModel)]="nomina.ejercicio">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="mes">Mes:</label>
+            <input type="text" class="form-control" id="mes" formControlName="mes" [(ngModel)]="nomina.mes">
+          </div>
+        </div>
+        <div class="col">
+          <div class="form-group">
+            <label for="orden">Número de orden:</label>
+            <input type="text" class="form-control" id="orden" formControlName="orden" [(ngModel)]="nomina.orden">
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+  <div class="row">
+    <div class="col">
+      <form [formGroup]="frmIngresos">
+        <h2 class="title">
+          INGRESOS
+          <small class="text-muted subtitle">
+            NÓMINA
+          </small>
+          <!-- <button *ngIf="actualizando" class="float-right btn btn-small btn-primary"
+            (click)="limpiar()">LIMPIAR</button> -->
+        </h2>
+        <fieldset class="fieldset">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="concepto">Concepto:</label>
+                <select formControlName="concepto" id="concepto" class="form-control" #conceptoV
+                  [(ngModel)]="concepto.codigo" (change)="onChangeConcepto(conceptoV.value)" formControlName="concepto">
+                  <option value="0" disabled>Elija un concepto</option>
+                  <option *ngFor="let con of listaDeConceptos" [ngValue]="con.codigo">
+                    {{con.descripcion}}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <label for="cantidadCon">Cantidad:</label>
+                <input type="text" class="form-control" id="cantidadCon" [(ngModel)]="ingreso.contidad"
+                  formControlName="cantidadCon">
+              </div>
+            </div>
+            <div class="col">
+              <button class="btn btn-success btn-block marginbutton" (click)="agregarIngreso()">Agregar</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+      <h2 *ngIf="listaDeIngresos?.length" class="title">REGISTROS <small class="text-muted subtitle">INGRESOS</small>
+      </h2>
+      <fieldset class="fieldset sub-div" *ngIf="listaDeIngresos?.length">
+        <table class="table table-striped table-bordered">
+          <caption>Lista de ingresos</caption>
+          <thead class="table-dark">
+            <tr>
+              <th>Concepto</th>
+              <th>Cantidad</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ing of listaDeIngresos">
+              <th>{{ing.concepto}}</th>
+              <td>{{ing.contidad | currency}}</td>
+              <td>
+                <button class="btn btn-danger btn-block" (click)="removerIngreso(ing)">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+    </div>
+
+    <div class="col">
+      <form [formGroup]="frmDescuentos">
+        <h2 class="title">
+          DESCUENTOS
+          <small class="text-muted subtitle">
+            NÓMINA
+          </small>
+          <!-- <button *ngIf="actualizando" class="float-right btn btn-small btn-primary"
+            (click)="limpiar()">LIMPIAR</button> -->
+        </h2>
+        <fieldset class="fieldset">
+          <div class="row">
+            <div class="col">
+              <div class="form-group">
+                <label for="base">Base:</label>
+                <input type="text" class="form-control" id="base" [(ngModel)]="descuento.base" formControlName="base">
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <label for="porcentaje">Porcentaje:</label>
+                <input type="text" class="form-control" id="porcentaje" [(ngModel)]="descuento.porcentaje"
+                  formControlName="porcentaje">
+              </div>
+            </div>
+            <div class="col">
+              <div class="form-group">
+                <label for="cantidadDes">Cantidad:</label>
+                <input type="text" class="form-control" id="cantidadDes" [value]="descuento.base * descuento.porcentaje / 100"
+                  formControlName="cantidadDes">
+              </div>
+            </div>
+            <div class="col">
+              <button class="btn btn-success btn-block marginbutton" (click)="agregarDescuento()">Agregar</button>
+            </div>
+          </div>
+        </fieldset>
+      </form>
+
+      <h2 *ngIf="listaDeDescuentos?.length" class="title">REGISTROS <small class="text-muted subtitle">DESCUENTOS</small>
+      </h2>
+      <fieldset class="fieldset sub-div" *ngIf="listaDeDescuentos?.length">
+        <table class="table table-striped table-bordered">
+          <caption>Lista de descuentos</caption>
+          <thead class="table-dark">
+            <tr>
+              <th>Base</th>
+              <th>Porcentaje</th>
+              <th>Cantidad</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let des of listaDeDescuentos">
+              <th>{{des.base}}</th>
+              <td>{{des.porcentaje}}</td>
+              <td>{{des.cantidad}}</td>
+              <td>
+                <button class="btn btn-danger btn-block" (click)="removerDescuento(des)">Eliminar</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </fieldset>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-md-3 offset-md-9 col-lg-3 offset-lg-9 col-sm-6 offset-sm-6 col-xs-12">
+      <button class="btn btn-success btn-block" (click)="guardarNomina()">{{actualizando ? 'Actualizar' : 'Guardar'}}</button>
+    </div>
+  </div>
+
+  <h2 *ngIf="listaDeNomina?.length" class="title">REGISTROS <small class="text-muted subtitle">NÓMINA</small></h2>
+  <fieldset class="fieldset" *ngIf="listaDeNomina?.length">
+    <table class="table table-striped table-bordered">
+      <caption>Lista de nómina</caption>
+      <thead class="table-dark">
+        <tr>
+          <th>Código empleado</th>
+          <th>Nombre</th>
+          <th>Ejercicio fiscal</th>
+          <th>Mes</th>
+          <th>Número de orden</th>
+          <th>Ingresos</th>
+          <th>Descuentos</th>
+          <th>Total</th>
+          <th colspan="2">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let nom of listaDeNomina">
+          <th>{{nom.codigoEmp}}</th>
+          <td>{{nom.nombreEmp}}</td>
+          <td>{{nom.ejercicio}}</td>
+          <td>{{nom.mes}}</td>
+          <td>{{nom.orden}}</td>
+          <td>{{nom.ingresos | currency }}</td>
+          <td>{{nom.descuentos | currency }}</td>
+          <td>{{nom.total | currency }}</td>
+          <td>
+            <button class="btn btn-warning btn-block" (click)="cargarNomina(nom)">Ver</button>
+          </td>
+          <td>
+              <button class="btn btn-danger btn-block" (click)="eliminarNomina(nom)">Eliminar</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </fieldset>
+</div>
