@@ -11,8 +11,13 @@ export class DescuentoService {
   constructor() { }
 
   getDescuentos(idnomina: number): Array<Descuento> {
-    let res = <Descuento[]>JSON.parse(localStorage.getItem(this.d));
-    return res.filter(item => item.idnomina === idnomina);
+    try {
+      let res = <Descuento[]>JSON.parse(localStorage.getItem(this.d));
+      return res.filter(item => item.idnomina === idnomina);
+    } catch (error) {
+      console.log(error);
+      return new Array<Descuento>();
+    }
   }
 
   setDescuentos(descuento: Descuento[]): boolean {
@@ -53,12 +58,17 @@ export class DescuentoService {
   }
 
   getTotalXNomina(idnomina: number):number{
-    let res = <Descuento[]>JSON.parse(localStorage.getItem(this.d));
-    let resNomina =  res.filter(item => item.idnomina === idnomina);
-    let total:number = 0;
-    resNomina.forEach(element => {
-      total += element.cantidad;
-    });
-    return total;
+    try {
+      let res = <Descuento[]>JSON.parse(localStorage.getItem(this.d));
+      let resNomina =  res.filter(item => item.idnomina === idnomina);
+      let total:number = 0;
+      resNomina.forEach(element => {
+        total += element.cantidad;
+      });
+      return total;
+    } catch (error) {
+      console.log(error);
+      return 0;
+    }
   }
 }

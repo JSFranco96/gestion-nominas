@@ -11,8 +11,13 @@ export class FuncionesService {
   constructor() { }
 
   getFunciones(codigoempleado: number): Array<Trabaja> {
-    let res = <Trabaja[]>JSON.parse(localStorage.getItem(this.f));
-    return res.filter(item => item.codigoempleado === codigoempleado);
+    try {
+      let res = <Trabaja[]>JSON.parse(localStorage.getItem(this.f));
+      return res.filter(item => item.codigoempleado === codigoempleado);
+    } catch (error) {
+      console.log(error);
+      return new Array<Trabaja>();      
+    }
   }
 
   setFunciones(funciones: Trabaja[]): boolean {

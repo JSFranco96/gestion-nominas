@@ -11,12 +11,22 @@ export class CuentasService {
   constructor() { }
 
   getCuentas(): Array<Cuenta> {
-    return <Cuenta[]>JSON.parse(localStorage.getItem(this.c));
+    try {
+      return <Cuenta[]>JSON.parse(localStorage.getItem(this.c));
+    } catch (error) {
+      console.log(error);
+      return new Array<Cuenta>();      
+    }
   }
 
   getCuentaXId(idcuenta: number): Cuenta{
-    let res = <Cuenta[]>JSON.parse(localStorage.getItem(this.c));
-    return res.filter(item => item.idcuenta === idcuenta)[0];
+    try {
+      let res = <Cuenta[]>JSON.parse(localStorage.getItem(this.c));
+      return res.filter(item => item.idcuenta === idcuenta)[0];
+    } catch (error) {
+      console.log(error);
+      return null;      
+    }
   }
 
   setCuenta(cuenta: Cuenta): number {

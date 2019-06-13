@@ -158,7 +158,11 @@ export class EmpleadosComponent implements OnInit {
       }
       else alert("Ocurrió un error " + (this.actualizando ? "actualizando" : "creando") + " la cuenta.");
     }
-    else alert("Debe llenar los campos");
+    else {
+      if(!this.frmEmpleado.valid) alert("Debe llenar los campos del empleado");
+      else if(!this.frmCuenta.valid) alert("Debe llenar los campos de la cuenta");
+      else alert("Debe agregar al menos un departamento al empleado");
+    }
   }
 
   llenarListaDeFunciones() {

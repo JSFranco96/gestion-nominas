@@ -122,12 +122,13 @@ export class NominaComponent implements OnInit {
 
   //--
   guardarNomina() {
+    debugger;
     if (this.frmNomina.valid && this.listaDeIngresos.length) {
       this.nominaG = {
         idcuenta: this.empleado.idcuenta,
         codigoempleado: this.empleado.codigo,
         ejerciciofiscal: this.nomina.ejercicio,
-        idnomina: 0,
+        idnomina: this.actualizando ? this.nomina.idnomina : 0,
         mes: this.nomina.mes,
         numeroorden: this.nomina.orden
       }
@@ -139,7 +140,7 @@ export class NominaComponent implements OnInit {
         this.listaDeIngresos.forEach(element => {
           element.idnomina = res;
         });
-        resIngresos = this.ingresosservice.setIngreso(this.listaDeIngresos);
+        resIngresos = this.ingresosservice.setIngreso(this.listaDeIngresos, this.actualizando);
         if (resIngresos > 0) {
           let resDescuentos: boolean = false;
           this.listaDeDescuentos.forEach(element => {
@@ -150,23 +151,24 @@ export class NominaComponent implements OnInit {
           if (resDescuentos) {
             if (!this.actualizando) {
               this.nominaG.idnomina = res;
-            }
-            let ing: number = 0
-            this.listaDeIngresos.forEach(element => {
-              ing += element.contidad;
-            });
-            let des: number = 0
-            this.listaDeDescuentos.forEach(element => {
-              des += element.cantidad
-            });
-            this.nomina.codigoEmp = this.empleado.codigo;
-            this.nomina.nombreEmp = this.empleado.nombre;
-            this.nomina.ingresos = ing;
-            this.nomina.descuentos = (des * -1);
-            this.nomina.total = ing - des
-            this.nomina.idnomina = res;
 
-            this.listaDeNomina.push(this.nomina);
+              let ing: number = 0
+              this.listaDeIngresos.forEach(element => {
+                ing += element.contidad;
+              });
+              let des: number = 0
+              this.listaDeDescuentos.forEach(element => {
+                des += element.cantidad
+              });
+              this.nomina.codigoEmp = this.empleado.codigo;
+              this.nomina.nombreEmp = this.empleado.nombre;
+              this.nomina.ingresos = ing;
+              this.nomina.descuentos = (des * -1);
+              this.nomina.total = ing - des
+              this.nomina.idnomina = res;
+
+              this.listaDeNomina.push(this.nomina);
+            }
 
             alert("Nómina " + (this.actualizando ? "actualizada" : "creada") + " exitosamente!");
             this.limpiar();
@@ -183,13 +185,25 @@ export class NominaComponent implements OnInit {
 
   //--
   cargarNomina(nomina) {
-    alert("Sin implementar");
+    //Empleado seleccionado
+    this.empleadoSeleccionado = nomina.codigoEmp;
+    this.onChangeEmpleado("1:" + this.empleadoSeleccionado);
+    //Nomina
+    this.nomina = nomina;
+    //Lista de ingresos
+    this.listaDeIngresos = this.ingresosservice.getIngreso(nomina.idnomina);
+    //acualizando
+    this.actualizando = true;
+    //get empleados
+    this.empleados.disable();
+    //Lista de descuentos
+    this.listaDeDescuentos = this.descuentosservice.getDescuentos(nomina.idnomina);
   }
 
   //--
   eliminarNomina(nomina) {
-    if(this.nominasservice.deleteNomina(nomina.idnomina)){
-      if(this.ingresosservice.deleteIngreso(nomina.idnomina)){
+    if (this.nominasservice.deleteNomina(nomina.idnomina)) {
+      if (this.ingresosservice.deleteIngreso(nomina.idnomina)) {
         if (this.descuentosservice.deleteDescuentos(nomina.idnomina)) {
           this.cargarTodasNominas();
           alert("Nómina eliminada exitosamente!");
@@ -205,33 +219,37 @@ export class NominaComponent implements OnInit {
     this.listaDeDescuentos = [];
     this.listaDeIngresos = [];
     this.empleadoSeleccionado = 0;
+    this.empleados.enable();
     this.nomina = { codigoEmp: null, nombreEmp: null, ejercicio: null, mes: null, orden: null, ingresos: null, descuentos: null, idnomina: null };
   }
 
   cargarTodasNominas() {
     this.listaDeNomina = [];
     let lista = this.nominasservice.getNominas();
+    if (lista !== null) {
 
-    let tingresos: number = 0;
-    let tdescuentos: number = 0;
-    let nombreEmp: string = String();
-    lista.forEach(element => {
-      tingresos = this.ingresosservice.getTotalXNomina(element.idnomina);
-      tdescuentos = this.descuentosservice.getTotalXNomina(element.idnomina);
-      nombreEmp = this.listaDeEmpleados.filter(item => item.codigo === element.codigoempleado)[0].nombre
-      this.nomina.codigoEmp = element.codigoempleado;
-      this.nomina.nombreEmp = nombreEmp;
-      this.nomina.ejercicio = element.ejerciciofiscal;
-      this.nomina.mes = element.mes;
-      this.nomina.orden = element.numeroorden;
-      this.nomina.ingresos = tingresos;
-      this.nomina.descuentos = (tdescuentos * -1);
-      this.nomina.total = tingresos - tdescuentos
-      this.nomina.idnomina = element.idnomina
+      let tingresos: number = 0;
+      let tdescuentos: number = 0;
+      let nombreEmp: string = String();
 
-      this.listaDeNomina.push(this.nomina);
-      this.nomina = { codigoEmp: null, nombreEmp: null, ejercicio: null, mes: null, orden: null, ingresos: null, descuentos: null, idnomina: null };
-    });
+      lista.forEach(element => {
+        tingresos = this.ingresosservice.getTotalXNomina(element.idnomina);
+        tdescuentos = this.descuentosservice.getTotalXNomina(element.idnomina);
+        nombreEmp = this.listaDeEmpleados.filter(item => item.codigo === element.codigoempleado)[0].nombre
+        this.nomina.codigoEmp = element.codigoempleado;
+        this.nomina.nombreEmp = nombreEmp;
+        this.nomina.ejercicio = element.ejerciciofiscal;
+        this.nomina.mes = element.mes;
+        this.nomina.orden = element.numeroorden;
+        this.nomina.ingresos = tingresos;
+        this.nomina.descuentos = (tdescuentos * -1);
+        this.nomina.total = tingresos - tdescuentos
+        this.nomina.idnomina = element.idnomina
+
+        this.listaDeNomina.push(this.nomina);
+        this.nomina = { codigoEmp: null, nombreEmp: null, ejercicio: null, mes: null, orden: null, ingresos: null, descuentos: null, idnomina: null };
+      });
+    }
   }
 
 }

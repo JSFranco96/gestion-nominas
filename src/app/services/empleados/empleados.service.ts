@@ -12,7 +12,12 @@ export class EmpleadosService {
   constructor() { }
 
   getEmpleados(): Array<Empleado> {
-    return <Empleado[]>JSON.parse(localStorage.getItem(this.emp));
+    try {
+      return <Empleado[]>JSON.parse(localStorage.getItem(this.emp));
+    } catch (error) {
+      console.log(error);
+      return new Array<Empleado>();
+    }
   }
 
   setEmpleado(empleado: Empleado): boolean {

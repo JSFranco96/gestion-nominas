@@ -11,7 +11,12 @@ export class DepartamentosService {
   constructor() { }
 
   getDepartamentos(): Array<Departamento> {
-    return <Departamento[]>JSON.parse(localStorage.getItem(this.depto));
+    try {
+      return <Departamento[]>JSON.parse(localStorage.getItem(this.depto));
+    } catch (error) {
+      console.log(error);
+      return Array<Departamento>();
+    }
   }
 
   setDepartamento(departamento: Departamento): boolean {

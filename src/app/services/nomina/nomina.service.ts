@@ -11,7 +11,12 @@ export class NominaService {
   constructor() { }
 
   getNominas(): Array<Nomina> {
-    return <Nomina[]>JSON.parse(localStorage.getItem(this.n));
+    try {
+      return <Nomina[]>JSON.parse(localStorage.getItem(this.n));
+    } catch (error) {
+      console.log(error);
+      return new Array<Nomina>();
+    }
   }
 
   setNomina(nomina: Nomina): number {
@@ -36,7 +41,7 @@ export class NominaService {
       if (index !== -1) {
         nom[index] = nomina;
         localStorage.setItem(this.n, JSON.stringify(nom));
-        return 1;
+        return nomina.idnomina;
       }
       return 0;
     } catch (error) {

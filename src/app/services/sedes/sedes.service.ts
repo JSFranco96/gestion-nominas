@@ -11,8 +11,13 @@ export class SedesService {
   constructor() { }
 
   getSedes(codigodepartamento: number): Array<Sede> {
-    let res = <Sede[]>JSON.parse(localStorage.getItem(this.sede));
+    try {
+      let res = <Sede[]>JSON.parse(localStorage.getItem(this.sede));
     return res.filter(item => item.codigodepartamento === codigodepartamento);
+    } catch (error) {
+      console.log(error);
+      return new Array<Sede>();
+    }
   }
 
   setSede(sedes: Sede[]): boolean {

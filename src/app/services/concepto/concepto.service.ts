@@ -10,7 +10,12 @@ export class ConceptoService {
   constructor() { }
 
   getConceptos(): Array<Concepto> {
-    return <Concepto[]>JSON.parse(localStorage.getItem(this.c));
+    try {
+      return <Concepto[]>JSON.parse(localStorage.getItem(this.c));
+    } catch (error) {
+      console.log(error);
+      return new Array<Concepto>();     
+    }
   }
 
   setConcepto(concepto: Concepto): boolean {
